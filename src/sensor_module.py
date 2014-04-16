@@ -84,7 +84,7 @@ ADC2 = 0x4a
 Datalogger_name = "RPI_LOGGER2"
 Site_name = "Bus Building 1st floor Men Bathroom"
 Site_description = "Meter1: Motion Sensor  -  Meter2: NEPTUNE 1 1/2 in T-10  - Meter3: Badger 25 5/8 - Meter4: Badger 25 5/8 "
-Port1_name = "Meter1"
+Port1_name = "PeopleCounter"
 Conv_factor1 = 0.01
 Port2_name = "MCT_rev"
 Conv_factor2 = 0.015526316
@@ -102,7 +102,7 @@ signal.signal(signal.SIGINT, signal_handler)
 #print 'Press Ctrl+C to exit'
 class SensorModule():
 
-    def __init__(self,data_directory = '/home/pi/Datalog/',sensor_id='WM_001',sitename = 'WL_WATER_METERS', enumerate_directory = True, time_support = 4):
+    def __init__(self,data_directory = '/home/pi/Datalog/',sensor_id='WM_001',sitename = 'WL_WATER_METERS', enumerate_directory = True, time_support = 15):
         logging.debug(sensor_id + ' ' + sitename)
 
         self._ntuple_diskusage = namedtuple('usage', 'total used free')
@@ -177,10 +177,10 @@ class SensorModule():
         self._pulse_count1 = 0
         self._pulse_count2 = 0
         self._pulse_count3 = 0
-        self._threshold0 = 1
+        self._threshold0 = 4.094
         self._threshold1 = 3
         self._threshold2 = 3
-        self._threshold3 = 1
+        self._threshold3 = 3
 
         self._MotionPause = 5
 
@@ -244,7 +244,7 @@ class SensorModule():
 
                 #This section is for specific used with a motion sensor
                 #--------------------------------------------------------------------------------------------------------
-                if self._volts0 > self._threshold0:
+                if self._volts0 < self._threshold0:
                     if capture:
                         self._pulse_count0 = self._pulse_count0 + 1
                         #logging.debug('System running... :)')
@@ -259,7 +259,8 @@ class SensorModule():
                 #Pulse count mode definition 1)Count X occurrences, 2)Count falling edge, 3)Count rising edge.
                 #Make adjustments here, if required.
                 #--------------------------------------------------------------------------------------------------------
-                self._reading_1 = self._falling_edge_count(self._intarray)
+                #self._reading_1 = self._falling_edge_count(self._intarray)
+		self._reading_1 = self._pulse_count0
                 self._reading_2 = self._falling_edge_count(self._intarray1)
                 self._reading_3 = self._falling_edge_count(self._intarray2)
                 self._reading_4 = self._falling_edge_count(self._intarray3)
@@ -301,7 +302,7 @@ class SensorModule():
         os.system('clear')
         print 'Duration: %.3f' %self._duration
         print '---------------------'
-        print 'ADC0: %.6f' %(self._volts0) + ' Flowrate: %f' %self._rev_to_gpm(reading1, self._conv_factor1, self._time_support) + ' GPM' 
+        print 'ADC0: %.6f' %(self._volts0) + ' Persons: %f' %reading1 #%self._rev_to_gpm(reading1, self._conv_factor1, self._time_support) + ' GPM' 
         print 'ADC1: %.6f' %(self._volts1) + ' Flowrate: %f' %self._rev_to_gpm(reading2, self._conv_factor2, self._time_support) + ' GPM'
         print 'ADC2: %.6f' %(self._volts2) + ' Flowrate: %f' %self._rev_to_gpm(reading3, self._conv_factor3, self._time_support) + ' GPM'
         print 'ADC3: %.6f' %(self._volts3) + ' Flowrate: %f' %self._rev_to_gpm(reading4, self._conv_factor4, self._time_support) + ' GPM'
@@ -377,7 +378,7 @@ class SensorModule():
 
     def _reset(self):
     
-        #self._pulse_count0 = 0
+        self._pulse_count0 = 0
         self._pulse_count1 = 0
         self._pulse_count2 = 0
         self._pulse_count3 = 0
