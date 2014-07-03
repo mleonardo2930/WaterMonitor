@@ -82,15 +82,16 @@ ADC2 = 0x4a
 
 #Site information
 Datalogger_name = "RPI_LOGGER2"
-Site_name = "Bus Building 1st floor Men Bathroom"
-Site_description = "Meter1: Motion Sensor  -  Meter2: NEPTUNE 1 1/2 in T-10  - Meter3: Badger 25 5/8 - Meter4: Badger 25 5/8 "
+Site_name = "Bus Building 1st floor Women Bathroom"
+Site_description = "Meter1: Motion Sensor  -  Meter2:Not in use  - Meter3: Badger 25 5/8 - Meter4: Badger 25 5/8 "
 Port1_name = "PeopleCounter"
 Conv_factor1 = 0.01
-Port2_name = "MCT_rev"
-Conv_factor2 = 0.015526316
-Port3_name = "MCF_rev"
+Port2_name = "N/A"
+Conv_factor2 = 0.01
+#0.015526316
+Port3_name = "WHF_rev"
 Conv_factor3 = 0.01
-Port4_name = "MHF_rev"
+Port4_name = "WCF_rev"
 Conv_factor4 = 0.01
 
 
@@ -102,7 +103,7 @@ signal.signal(signal.SIGINT, signal_handler)
 #print 'Press Ctrl+C to exit'
 class SensorModule():
 
-    def __init__(self,data_directory = '/home/pi/Datalog/',sensor_id='WM_001',sitename = 'WL_WATER_METERS', enumerate_directory = True, time_support = 15):
+    def __init__(self,data_directory = '/home/pi/Datalog/',sensor_id='BUS_WOMEN_BATHROOM',sitename = 'WATER_METERS', enumerate_directory = True, time_support = 5):
         logging.debug(sensor_id + ' ' + sitename)
 
         self._ntuple_diskusage = namedtuple('usage', 'total used free')
